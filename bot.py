@@ -1,0 +1,27 @@
+import logging
+from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
+from telegram.ext import ApplicationBuilder, CommandHandler, CallbackContext
+
+from commands.kick import kick
+from commands.rps import rps
+from commands.help_cmd import help_command
+
+# Remplace par ton vrai token ici
+TOKEN = "TON_BOT_TOKEN_ICI"
+
+logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
+
+async def start(update: Update, context: CallbackContext):
+    await update.message.reply_text("🔮 Bienvenue dans DarkAI Bot.
+Tape /help pour voir les commandes.")
+
+if __name__ == '__main__':
+    app = ApplicationBuilder().token(TOKEN).build()
+
+    app.add_handler(CommandHandler("start", start))
+    app.add_handler(CommandHandler("help", help_command))
+    app.add_handler(CommandHandler("kick", kick))
+    app.add_handler(CommandHandler("rps", rps))
+
+    print("✅ Bot lancé.")
+    app.run_polling()
