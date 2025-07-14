@@ -7,7 +7,7 @@ from commands.rps import rps
 from commands.help_cmd import help_command
 
 # Remplace par ton vrai token ici
-TOKEN = "TON_BOT_TOKEN_ICI"
+TOKEN = "8146852566:AAHf8Jkrd124pWD1N6G9AeOKxtGIi3gvouA"
 
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
 
