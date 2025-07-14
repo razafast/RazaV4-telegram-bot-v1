@@ -12,8 +12,7 @@ TOKEN = "8146852566:AAHf8Jkrd124pWD1N6G9AeOKxtGIi3gvouA"
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
 
 async def start(update: Update, context: CallbackContext):
-    await update.message.reply_text("🔮 Bienvenue dans DarkAI Bot.
-Tape /help pour voir les commandes.")
+    await update.message.reply_text("🔮 Bienvenue dans DarkAI Bot.\nTape /help pour voir les commandes.")
 
 if __name__ == '__main__':
     app = ApplicationBuilder().token(TOKEN).build()
