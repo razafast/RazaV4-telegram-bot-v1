@@ -63,5 +63,4 @@ if __name__ == "__main__":
     app.add_handler(CommandHandler(["ai", "kyo"], ai_kyo))
 
     print("✅ Bot lancé.")
-    app.run_polling()
-```0
+    app.run_polling()
