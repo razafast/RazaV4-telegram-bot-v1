@@ -1,28 +1,31 @@
 import aiohttp
-from io import BytesIO
 from telegram import Update
 from telegram.ext import ContextTypes
+from io import BytesIO
 
-API_KEY = "d90a9e986e18778b"   # ta clé XTeam
+API_URL = "https://delirius-apiofc.vercel.app/nsfw/girls"
 
 async def nsfw(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    """Envoie une image NSFW aléatoire dans n’importe quel chat (PV, groupe, canal)."""
+    """Envoie une image NSFW aléatoire depuis Delirius API (PV, groupe, canal)."""
 
-    msg = update.effective_message      # fonctionne pour message ou channel_post
+    msg = update.effective_message
     chat_id = update.effective_chat.id
 
     await msg.reply_text("🔞 Recherche d’une image NSFW…")
 
-    url = f"https://api.xteam.xyz/hentai?file=true&apikey={API_KEY}"
-    async with aiohttp.ClientSession() as session:
-        async with session.get(url) as resp:
-            if resp.status != 200:
-                await msg.reply_text("❌ Impossible de récupérer l’image.")
-                return
-            data = await resp.read()
+    try:
+        async with aiohttp.ClientSession() as session:
+            async with session.get(API_URL) as resp:
+                if resp.status != 200:
+                    await msg.reply_text("❌ Impossible de récupérer l’image.")
+                    return
+                image_data = await resp.read()
+    except Exception as e:
+        await msg.reply_text(f"❌ Erreur réseau : {e}")
+        return
 
     await context.bot.send_photo(
         chat_id=chat_id,
-        photo=BytesIO(data),
-        caption="🔞 Contenu NSFW fourni par XTeam"
+        photo=BytesIO(image_data),
+        caption="🔞 Contenu NSFW fourni par Delirius API"
     )
