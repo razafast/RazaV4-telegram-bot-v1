@@ -14,6 +14,12 @@ from commands.lirik import lirik
 from commands.ytmp4 import ytmp4
 from commands.ipinfo import ipinfo
 
+# Nouveaux imports
+from commands.ping import ping
+from commands.uptime import uptime
+from commands.nsfw import nsfw
+from commands.ai_kyo import ai_kyo
+
 TOKEN = "8146852566:AAHf8Jkrd124pWD1N6G9AeOKxtGIi3gvouA"
 
 logging.basicConfig(
@@ -44,6 +50,12 @@ if __name__ == "__main__":
     app.add_handler(CommandHandler("ttp", ttp))
     app.add_handler(CommandHandler("lirik", lirik))
     app.add_handler(CommandHandler("ytmp4", ytmp4))
+
+    # nouvelles commandes
+    app.add_handler(CommandHandler("ping", ping))
+    app.add_handler(CommandHandler("uptime", uptime))
+    app.add_handler(CommandHandler("nsfw", nsfw))
+    app.add_handler(CommandHandler(["ai", "kyo"], ai_kyo))
 
     print("✅ Bot lancé.")
     app.run_polling()
