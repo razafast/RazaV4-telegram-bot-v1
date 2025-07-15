@@ -25,14 +25,18 @@ async def ytmp4(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
                 return
             data = await resp.json()
 
-    title = data.get("title", "Vidéo")
-    video_url = data.get("url")
+    result = data.get("result", {})
+    title = result.get("title", "Vidéo")
+    video_url = result.get("url")
 
     if not video_url:
         await update.message.reply_text("❌ Aucun lien vidéo trouvé.")
         return
 
-    await update.message.reply_video(
-        video=video_url,
-        caption=f"🎬 {title}"
-    )
+    try:
+        await update.message.reply_video(
+            video=video_url,
+            caption=f"🎬 {title}"
+        )
+    except Exception as e:
+        await update.message.reply_text(f"❌ Erreur lors de l'envoi de la vidéo : {e}")
