@@ -2,30 +2,28 @@ from telegram import Update, ChatMemberAdministrator, ChatMemberOwner
 from telegram.ext import CallbackContext
 
 async def kick(update: Update, context: CallbackContext):
-    bot = context.bot
-    chat = update.effective_chat
-    msg = update.effective_message
-
-    if not msg.reply_to_message:
-        await msg.reply_text("❌ Réponds au message de la personne à expulser.")
+    # Vérifie si on a bien répondu à un message
+    if not update.message.reply_to_message:
+        await update.message.reply_text("Réponds au message de la personne à expulser.")
         return
 
-    user_to_kick = msg.reply_to_message.from_user
-    chat_id = chat.id
+    chat = update.effective_chat
+    bot_member = await context.bot.get_chat_member(chat.id, context.bot.id)
+    target_user = update.message.reply_to_message.from_user
+    target_member = await context.bot.get_chat_member(chat.id, target_user.id)
 
     # Vérifie si le bot est admin
-    bot_member = await bot.get_chat_member(chat_id, bot.id)
-    if not (bot_member.can_restrict_members if hasattr(bot_member, 'can_restrict_members') else False):
-        await msg.reply_text("❌ Je dois être admin avec le droit d'expulser les membres.")
+    if not (bot_member.status == "administrator" and bot_member.can_restrict_members):
+        await update.message.reply_text("Je dois être administrateur avec les droits d’expulsion.")
         return
 
-    # Optionnel : vérifier si l'auteur est aussi admin
-    sender = await bot.get_chat_member(chat_id, msg.from_user.id)
-    if isinstance(sender, ChatMemberAdministrator) or isinstance(sender, ChatMemberOwner):
-        try:
-            await bot.ban_chat_member(chat_id, user_to_kick.id)
-            await msg.reply_text(f"✅ {user_to_kick.mention_html()} a été expulsé du groupe.", parse_mode="HTML")
-        except Exception as e:
-            await msg.reply_text(f"❌ Erreur lors de l'expulsion : {e}")
-    else:
-        await msg.reply_text("❌ Seuls les admins peuvent utiliser cette commande.")
+    # Empêche d’expulser un admin ou le propriétaire
+    if target_member.status in [ChatMemberAdministrator.STATUS, ChatMemberOwner.STATUS]:
+        await update.message.reply_text("Je ne peux pas expulser un administrateur.")
+        return
+
+    try:
+        await context.bot.ban_chat_member(chat.id, target_user.id)
+        await update.message.reply_text(f"{target_user.mention_html()} a été expulsé du groupe. 🦾", parse_mode="HTML")
+    except Exception as e:
+        await update.message.reply_text(f"Erreur : impossible d’expulser cet utilisateur.\n{e}")
