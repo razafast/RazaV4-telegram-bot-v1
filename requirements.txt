@@ -1,2 +1,5 @@
-python-telegram-bot>=22.1
-aiohttp>=3.9
+python-telegram-bot==20.6
+openai
+aiohttp
+requests
+Flask
