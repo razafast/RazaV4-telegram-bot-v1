@@ -8,6 +8,7 @@ from telegram.ext import (
 )
 
 from commands.kick import kick
+from commands.unban import unban          # ← ajouté
 from commands.help_cmd import help_command
 from commands.info import info
 from commands.ttp import ttp
@@ -38,18 +39,24 @@ if __name__ == "__main__":
 
     app.bot_data["start_time"] = time.time()
 
+    # Commandes de base
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CommandHandler("help", help_command))
 
+    # Admin
     app.add_handler(CommandHandler("kick", kick))
+    app.add_handler(CommandHandler("unban", unban))   # ← ajouté
 
+    # Utilitaires
     app.add_handler(CommandHandler("info", info))
     app.add_handler(CommandHandler("ipinfo", ipinfo))
 
+    # Fun / Media
     app.add_handler(CommandHandler("ttp", ttp))
     app.add_handler(CommandHandler("lirik", lirik))
     app.add_handler(CommandHandler("ytmp4", ytmp4))
 
+    # Divers
     app.add_handler(CommandHandler("ping", ping))
     app.add_handler(CommandHandler("uptime", uptime))
     app.add_handler(CommandHandler("nsfw", nsfw))
@@ -57,3 +64,4 @@ if __name__ == "__main__":
 
     print("✅ Bot lancé.")
     app.run_polling()
+```0
