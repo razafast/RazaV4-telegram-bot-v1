@@ -1,4 +1,5 @@
 import logging
+import time                                       # ← NEW
 from telegram import Update
 from telegram.ext import (
     ApplicationBuilder,
@@ -14,7 +15,7 @@ from commands.lirik import lirik
 from commands.ytmp4 import ytmp4
 from commands.ipinfo import ipinfo
 
-# Nouveaux imports
+# nouvelles commandes
 from commands.ping import ping
 from commands.uptime import uptime
 from commands.nsfw import nsfw
@@ -34,6 +35,9 @@ async def start(update: Update, context: CallbackContext):
 
 if __name__ == "__main__":
     app = ApplicationBuilder().token(TOKEN).build()
+
+    # Enregistre l'heure de démarrage pour /uptime
+    app.bot_data["start_time"] = time.time()      # ← NEW
 
     # commandes de base
     app.add_handler(CommandHandler("start", start))
