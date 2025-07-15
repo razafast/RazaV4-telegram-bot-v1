@@ -1,10 +1,10 @@
 import logging
-import time                                       # ← NEW
+import time
 from telegram import Update
 from telegram.ext import (
     ApplicationBuilder,
     CommandHandler,
-    CallbackContext,
+    ContextTypes,
 )
 
 from commands.kick import kick
@@ -28,7 +28,7 @@ logging.basicConfig(
     level=logging.INFO,
 )
 
-async def start(update: Update, context: CallbackContext):
+async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
         "🔮 Bienvenue dans DarkAI Bot.\nTape /help pour voir les commandes."
     )
@@ -36,26 +36,20 @@ async def start(update: Update, context: CallbackContext):
 if __name__ == "__main__":
     app = ApplicationBuilder().token(TOKEN).build()
 
-    # Enregistre l'heure de démarrage pour /uptime
-    app.bot_data["start_time"] = time.time()      # ← NEW
+    app.bot_data["start_time"] = time.time()
 
-    # commandes de base
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CommandHandler("help", help_command))
 
-    # admin
     app.add_handler(CommandHandler("kick", kick))
 
-    # utilitaires
     app.add_handler(CommandHandler("info", info))
     app.add_handler(CommandHandler("ipinfo", ipinfo))
 
-    # fun / media
     app.add_handler(CommandHandler("ttp", ttp))
     app.add_handler(CommandHandler("lirik", lirik))
     app.add_handler(CommandHandler("ytmp4", ytmp4))
 
-    # nouvelles commandes
     app.add_handler(CommandHandler("ping", ping))
     app.add_handler(CommandHandler("uptime", uptime))
     app.add_handler(CommandHandler("nsfw", nsfw))
