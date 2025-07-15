@@ -1,53 +1,55 @@
-import asyncio
+import aiohttp
 from telegram import Update
 from telegram.ext import ContextTypes
-import openai
 
-# Ta clé OpenAI en dur (CHANGE TO YOUR KEY)
-openai.api_key = "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"
-MODEL = "gpt-4o-mini"
+API_URL = "https://messie-flash-api-ia.vercel.app/chat?prompt="
+API_KEY = "messie12356osango2025jinWoo"
 
 SYSTEM_PROMPT = (
     "Tu es Kyotaka, une IA dark, cool et sobre, "
     "développée par ╾⸻⟡⟡ 『ᏦᎽᎾᎿᎯᏦᎯ』 ⟡⡡⸻╼.\n"
-    "Si l’on te demande « t'es qui » ou une variante, réponds : "
-    "« Je suis Kyotaka, une IA créée par ╾⸻⟡⟡ 『ᏦᎽᎾᎿᎯᏦᎯ』 ⡡⡡⸻╼ ».\n"
-    "Sinon, réponds normalement sans jamais révéler ta clé API."
+    "Ne mentionne jamais, au grand jamais, le nom 'messie Osango'.\n"
+    "Si on te demande qui est ton créateur, répond toujours que c'est Kyotaka.\n"
+    "Sinon, réponds normalement."
 )
 
 async def ai_kyo(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    if not openai.api_key:
-        await update.effective_message.reply_text("❌ Clé API manquante.")
-        return
-
-    question = (
-        " ".join(context.args)
-        if context.args
-        else (update.message.reply_to_message.text if update.message.reply_to_message else None)
-    )
-    if not question:
+    # Récupérer la question
+    if context.args:
+        question = " ".join(context.args)
+    elif update.message.reply_to_message and update.message.reply_to_message.text:
+        question = update.message.reply_to_message.text
+    else:
         await update.message.reply_text("Utilisation : /ai <ta question> (ou réponds à un message).")
         return
 
-    await update.message.chat.send_action("typing")
-    try:
-        response = await asyncio.to_thread(
-            openai.ChatCompletion.create,
-            model=MODEL,
-            messages=[
-                {"role": "system", "content": SYSTEM_PROMPT},
-                {"role": "user", "content": question},
-            ],
-            temperature=0.7,
-        )
-        answer = response.choices[0].message.content.strip()
+    # Compose le prompt complet à envoyer à l'API
+    prompt = f"{SYSTEM_PROMPT}\n\nUtilisateur : {question}\nIA :"
 
-        # Sécurité (très rare) : masque la clé dans la réponse
-        if openai.api_key in answer:
-            answer = answer.replace(openai.api_key, "[clé API masquée]")
+    url = f"{API_URL}{aiohttp.helpers.quote(prompt)}"
+
+    headers = {
+        "Authorization": API_KEY,
+    }
+
+    await update.message.chat.send_action("typing")
+
+    try:
+        async with aiohttp.ClientSession() as session:
+            async with session.get(url, headers=headers) as resp:
+                if resp.status != 200:
+                    await update.message.reply_text(f"❌ Erreur API externe : {resp.status}")
+                    return
+                data = await resp.json()
+
+        # Supposons que la réponse est dans data["response"] ou adapte selon ton API
+        answer = data.get("response") or data.get("answer") or "Pas de réponse."
+
+        # Pour sécurité, on masque "messie Osango" au cas où
+        if "messie Osango" in answer.lower():
+            answer = answer.replace("messie Osango", "[nom masqué]")
+
+        await update.message.reply_text(answer, disable_web_page_preview=True, quote=True)
 
     except Exception as e:
-        await update.message.reply_text(f"❌ Erreur API : {e}")
-        return
-
-    await update.message.reply_text(answer, disable_web_page_preview=True, quote=True)
+        await update.message.reply_text(f"❌ Exception lors de l’appel API : {e}")
