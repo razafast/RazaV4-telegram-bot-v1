@@ -19,7 +19,9 @@ from commands.ass import ass
 from commands.boobs import boobs
 from commands.hboobs import hboobs
 from commands.ipinfo import ipinfo
-from commands.welcome import welcome
+from commands.darkgen import darkgen
+from commands.darkweather import darkweather
+from commands.defdark import defdark
 from commands.ping import ping
 from commands.uptime import uptime
 from commands.nsfw import nsfw
@@ -54,12 +56,14 @@ def main() -> None:
     app.add_handler(CommandHandler("boobs", boobs))
     app.add_handler(CommandHandler("hboobs", hboobs))
 
+    app.add_handler(CommandHandler("darkgen", darkgen))
+    app.add_handler(CommandHandler("darkweather", darkweather))
+    app.add_handler(CommandHandler("defdark", defdark))
+
     app.add_handler(CommandHandler("ping", ping))
     app.add_handler(CommandHandler("uptime", uptime))
     app.add_handler(CommandHandler("nsfw", nsfw))
     app.add_handler(CommandHandler(["ai", "kyo"], ai_kyo))
-
-    app.add_handler(MessageHandler(filters.StatusUpdate.NEW_CHAT_MEMBERS, welcome))
 
     logging.info("✅ Bot lancé et prêt à répondre ✨")
     app.run_polling()
