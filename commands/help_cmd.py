@@ -11,6 +11,7 @@ async def help_command(update: Update, context: CallbackContext):
 👮 Admin
 /kick   – Expulser un membre
 /unban  – Débannir un utilisateur
+/ban    – Bannir directement un utilisateur
 
 📡 Réseau
 /ipinfo <ip>      – Infos sur une IP
@@ -28,7 +29,7 @@ async def help_command(update: Update, context: CallbackContext):
 🎨 Dark & Fun
 /darkgen <prompt>     – Génère une image dark
 /darkweather <ville>  – Météo dark
-/darkquote                – Citation dark du jour
+/darkquote            – Citation dark du jour
 
 📚 Définitions
 /defdark <mot>        – Définitions dark automatiques
