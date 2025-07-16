@@ -14,7 +14,7 @@ import aiohttp
 from telegram import Update
 from telegram.ext import ContextTypes
 
-MAX_TELEGRAM_CHARS = 4000  # limite de caractères pour Telegram
+MAX_TELEGRAM_CHARS = 4000  
 
 API_BASE = "https://api.lyrics.ovh/v1/{artist}/{title}"
 
