@@ -27,5 +27,5 @@ async def nsfw(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     await context.bot.send_photo(
         chat_id=chat_id,
         photo=BytesIO(image_data),
-        caption="🔞 Contenu NSFW fourni par Delirius API"
+        caption="🔞 Contenu NSFW"
     )
