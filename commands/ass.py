@@ -6,7 +6,7 @@ from telegram.ext import ContextTypes
 
 API_KEY = "wPFeQbmfRV-rpzlhttqX7nY7tDBMnN6-Tx72EqzIEQ"
 API_URL = "https://api.night-api.com/images/nsfw/ass"
-CAPTION = "🍑 Voilà des ass via Night‑API"
+CAPTION = "🍑 Voilà des ass"
 
 async def ass(update: Update, context: ContextTypes.DEFAULT_TYPE):
     headers = {"authorization": API_KEY}
