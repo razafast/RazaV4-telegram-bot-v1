@@ -1,23 +1,16 @@
-import urllib.parse, aiohttp
+import aiohttp
 from telegram import Update
 from telegram.ext import ContextTypes
 
-API_KEY  = "14960d2b4c71e3b190761233"            # ta clé lolhuman
-API_URL  = "https://api.lolhuman.xyz/api/iplookup"
+API_URL = "http://ip-api.com/json/{}"
 
 async def ipinfo(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    """
-    /ipinfo <adresse-IP>
-    Renvoie pays, région, ville, FAI, org, fuseau horaire…
-    """
-
     if not context.args:
         await update.effective_message.reply_text("Utilisation : /ipinfo <adresse-IP>")
         return
 
     ip = context.args[0]
-    params = {"apikey": API_KEY, "query": ip}
-    url = f"{API_URL}?{urllib.parse.urlencode(params)}"
+    url = API_URL.format(ip)
 
     await update.effective_message.reply_text("🌐 Recherche en cours…")
 
@@ -27,19 +20,21 @@ async def ipinfo(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
                 if resp.status != 200:
                     await update.effective_message.reply_text(f"❌ Erreur API ({resp.status}).")
                     return
-                raw = await resp.json()
+                data = await resp.json()
     except Exception as e:
         await update.effective_message.reply_text(f"❌ Erreur réseau : {e}")
         return
 
-    data = raw.get("result", raw)
+    if data.get("status") != "success":
+        await update.effective_message.reply_text("❌ IP invalide ou non trouvée.")
+        return
 
     country   = data.get("country", "—")
-    region    = data.get("regionName", data.get("region", "—"))
+    region    = data.get("regionName", "—")
     city      = data.get("city", "—")
     timezone  = data.get("timezone", "—")
     isp       = data.get("isp", "—")
-    org       = data.get("org", data.get("organization", "—"))
+    org       = data.get("org", "—")
 
     txt = (
         f"🌐 <b>IP :</b> <code>{ip}</code>\n"
