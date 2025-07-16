@@ -13,7 +13,7 @@ async def boobs(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     return
 
                 data = await resp.json()
-                image_url = data.get("message")  # le lien de l'image est dans "message"
+                image_url = data.get("message")  
 
                 if not image_url:
                     await update.message.reply_text("Aucune image reçue 😕")
