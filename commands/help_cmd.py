@@ -23,6 +23,7 @@ async def help_command(update: Update, context: CallbackContext):
 🔞 NSFW
 /nsfw  – Menu NSFW
 /boobs – Image NSFW aléatoire
+/ass   – Image NSFW ass 🍑
 
 ⚙️ Divers
 /ping        – Vérifie la latence
