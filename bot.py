@@ -22,6 +22,7 @@ from commands.ipinfo import ipinfo
 from commands.darkgen import darkgen
 from commands.darkweather import darkweather
 from commands.defdark import defdark
+from commands.darkquote import darkquote
 from commands.ping import ping
 from commands.uptime import uptime
 from commands.nsfw import nsfw
@@ -59,6 +60,7 @@ def main() -> None:
     app.add_handler(CommandHandler("darkgen", darkgen))
     app.add_handler(CommandHandler("darkweather", darkweather))
     app.add_handler(CommandHandler("defdark", defdark))
+    app.add_handler(CommandHandler("darkquote", darkquote))
 
     app.add_handler(CommandHandler("ping", ping))
     app.add_handler(CommandHandler("uptime", uptime))
