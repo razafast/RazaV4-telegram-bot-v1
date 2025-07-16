@@ -8,12 +8,12 @@ async def info(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     • sinon si tu passes /info @username ou /info <id> ;
     • sinon c’est toi-même.
     """
-    # ─── Trouver l’utilisateur ciblé ─────────────────────────────────────────────
+    
     if update.message.reply_to_message:
         user = update.message.reply_to_message.from_user
     elif context.args:
         try:
-            # @username → Telegram le résout, sinon int(id)
+            
             user = (await context.bot.get_chat_member(
                 update.effective_chat.id,
                 context.args[0]
@@ -24,17 +24,17 @@ async def info(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     else:
         user = update.effective_user
 
-    # ─── Texte d’info ───────────────────────────────────────────────────────────
+    
     text = (
         f"🆔 ID : <code>{user.id}</code>\n"
         f"👤 Nom : {user.full_name}\n"
         f"🔗 Username : @{user.username if user.username else '—'}"
     )
 
-    # ─── Photo de profil si dispo ───────────────────────────────────────────────
+    
     photos = await context.bot.get_user_profile_photos(user.id, limit=1)
     if photos.total_count:
-        # On envoie la plus grande taille de la première photo
+        
         file_id = photos.photos[0][-1].file_id
         await update.message.reply_photo(file_id, caption=text, parse_mode="HTML")
     else:
