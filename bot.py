@@ -8,7 +8,7 @@ from telegram.ext import (
 )
 
 from commands.kick import kick
-from commands.unban import unban          # ← ajouté
+from commands.unban import unban
 from commands.help_cmd import help_command
 from commands.info import info
 from commands.ttp import ttp
@@ -21,6 +21,7 @@ from commands.ping import ping
 from commands.uptime import uptime
 from commands.nsfw import nsfw
 from commands.ai_kyo import ai_kyo
+from commands.boobs import boobs     # ← import de la commande boobs
 
 TOKEN = "8146852566:AAHf8Jkrd124pWD1N6G9AeOKxtGIi3gvouA"
 
@@ -45,7 +46,7 @@ if __name__ == "__main__":
 
     # Admin
     app.add_handler(CommandHandler("kick", kick))
-    app.add_handler(CommandHandler("unban", unban))   # ← ajouté
+    app.add_handler(CommandHandler("unban", unban))
 
     # Utilitaires
     app.add_handler(CommandHandler("info", info))
@@ -55,6 +56,7 @@ if __name__ == "__main__":
     app.add_handler(CommandHandler("ttp", ttp))
     app.add_handler(CommandHandler("lirik", lirik))
     app.add_handler(CommandHandler("ytmp4", ytmp4))
+    app.add_handler(CommandHandler("boobs", boobs))   # ← ajout de la commande boobs
 
     # Divers
     app.add_handler(CommandHandler("ping", ping))
