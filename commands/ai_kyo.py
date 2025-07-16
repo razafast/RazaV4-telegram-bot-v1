@@ -1,13 +1,18 @@
-import aiohttp, urllib.parse
+import os, aiohttp, urllib.parse
 from telegram import Update
 from telegram.ext import ContextTypes
 
-API_URL = "https://api.affiliateplus.xyz/api/chatbot"
+API_KEY = os.getenv("GEMINI_API_KEY")          # ← mets ta clé ici, ou en env
+API_URL = (
+    "https://generativelanguage.googleapis.com/v1beta/models/"
+    "gemini-pro:generateContent?key="
+    + urllib.parse.quote(API_KEY)              # clé dans l’URL (format Google)
+)
 
 SYSTEM_RULE = (
     "Tu es Kyotaka, une IA dark, cool et sobre. "
     "Ne mentionne jamais un quelconque « messie Osango ». "
-    "Si l’on te demande qui t’a créé, réponds simplement : "
+    "Si l’on te demande qui t’a créé, réponds : "
     "« Je suis Kyotaka, IA développée par ᏦᎽᎾᎿᎯᏦᎯ. » "
     "Réponds normalement à tout le reste."
 )
@@ -19,35 +24,49 @@ async def ai_kyo(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     elif update.message.reply_to_message and update.message.reply_to_message.text:
         user_msg = update.message.reply_to_message.text
     else:
-        await update.message.reply_text("Utilisation : /ai <question> (ou réponds à un message).")
+        await update.message.reply_text(
+            "Utilisation : /ai <question> (ou réponds à un message)."
+        )
         return
 
-    # 2. Construire le prompt (on préfixe la règle système)
     prompt = f"{SYSTEM_RULE}\n\nUtilisateur : {user_msg}"
 
-    # 3. Requête à l’API Affiliate Plus
-    params = {
-        "message": prompt,
-        "botname": "Kyotaka",
-        "ownername": "Kyotaka"
+    payload = {
+        "contents": [
+            {
+                "parts": [{"text": prompt}]
+            }
+        ],
+        "generationConfig": { "temperature": 0.7 }
     }
-    url = f"{API_URL}?{urllib.parse.urlencode(params)}"
 
     await update.message.chat.send_action("typing")
 
+    if not API_KEY:
+        await update.message.reply_text("❌ Clé GEMINI_API_KEY manquante.")
+        return
+
     try:
-        async with aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(total=10)) as session:
-            async with session.get(url) as resp:
+        async with aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(total=15)) as s:
+            async with s.post(API_URL, json=payload) as resp:
                 if resp.status != 200:
-                    await update.message.reply_text(f"❌ Erreur API : {resp.status}")
+                    await update.message.reply_text(f"❌ Erreur Gemini : {resp.status}")
                     return
                 data = await resp.json()
     except Exception as e:
         await update.message.reply_text(f"❌ Erreur réseau : {e}")
         return
 
-    answer = data.get("message", "Je n’ai aucune réponse pour l’instant.")
-    # Sécurité : on masque « messie Osango » s’il apparaît par erreur
+    # Gemini renvoie la réponse dans choices[0].content.parts[0].text
+    try:
+        answer = (
+            data["candidates"][0]["content"]["parts"][0]["text"]
+        )
+    except (KeyError, IndexError):
+        answer = "Je n’ai aucune réponse pour l’instant."
+
     answer = answer.replace("messie Osango", "[nom masqué]")
 
-    await update.message.reply_text(answer, disable_web_page_preview=True, quote=True)
+    await update.message.reply_text(
+        answer, disable_web_page_preview=True, quote=True
+    )
