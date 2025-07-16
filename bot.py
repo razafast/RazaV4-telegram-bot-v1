@@ -27,6 +27,7 @@ from commands.ping import ping
 from commands.uptime import uptime
 from commands.nsfw import nsfw
 from commands.ai_kyo import ai_kyo
+from commands.ban import ban     
 
 TOKEN = "8146852566:AAHf8Jkrd124pWD1N6G9AeOKxtGIi3gvouA"
 
@@ -47,6 +48,7 @@ def main() -> None:
 
     app.add_handler(CommandHandler("kick", kick))
     app.add_handler(CommandHandler("unban", unban))
+    app.add_handler(CommandHandler("ban", ban))           # ← ajout handler ban
 
     app.add_handler(CommandHandler("info", info))
     app.add_handler(CommandHandler("ipinfo", ipinfo))
