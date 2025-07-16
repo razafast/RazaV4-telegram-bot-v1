@@ -15,6 +15,7 @@ from commands.ttp import ttp
 from commands.lirik import lirik
 from commands.ass import ass
 from commands.ipinfo import ipinfo
+from commands.hboobs import hboobs
 
 # nouvelles commandes
 from commands.ping import ping
@@ -60,6 +61,8 @@ if __name__ == "__main__":
 
     # Divers
     app.add_handler(CommandHandler("ping", ping))
+
+app.add_handler(CommandHandler("hboobs", hboobs))
     app.add_handler(CommandHandler("uptime", uptime))
     app.add_handler(CommandHandler("nsfw", nsfw))
     app.add_handler(CommandHandler(["ai", "kyo"], ai_kyo))
