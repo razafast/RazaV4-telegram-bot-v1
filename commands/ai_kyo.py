@@ -2,12 +2,13 @@ import aiohttp
 from telegram import Update
 from telegram.ext import ContextTypes
 
-# Clé écrite directement ici (⚠ à ne pas exposer publiquement)
+# Clé API Gemini
 API_KEY = "AIzaSyDbLr0gx5ldIDqxXt9D0iUl77fGUI-QDEM"
 
+# ✅ Nouvelle URL avec le modèle valide
 API_URL = (
     "https://generativelanguage.googleapis.com/v1beta/models/"
-    f"gemini-pro:generateContent?key={API_KEY}"
+    f"gemini-2.5-flash:generateContent?key={API_KEY}"
 )
 
 SYSTEM_RULE = (
