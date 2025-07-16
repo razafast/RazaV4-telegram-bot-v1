@@ -1,34 +1,18 @@
-from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
-from telegram.ext import CallbackContext
+from telegram import Update from telegram.ext import CallbackContext from telegram import ReplyKeyboardMarkup
 
-async def help_command(update: Update, context: CallbackContext):
-    keyboard = [
-        [InlineKeyboardButton("📌 Start", callback_data="start"),
-         InlineKeyboardButton("ℹ️ Help", callback_data="help")],
+async def help_command(update: Update, context: CallbackContext): help_text = """ 🧠 Commandes disponibles :
 
-        [InlineKeyboardButton("🛡️ Kick", callback_data="kick"),
-         InlineKeyboardButton("♻️ Unban", callback_data="unban")],
+/start - Démarrer le bot /help - Afficher ce message d’aide
 
-        [InlineKeyboardButton("📍 IP Info", callback_data="ipinfo"),
-         InlineKeyboardButton("🧠 Info", callback_data="info")],
+👮 Admin /kick - Expulser un membre /unban - Débannir un utilisateur
 
-        [InlineKeyboardButton("🎨 TTP", callback_data="ttp"),
-         InlineKeyboardButton("🎵 Lirik", callback_data="lirik")],
+📡 Réseau /ipinfo <ip> - Infos sur une IP
 
-        [InlineKeyboardButton("📹 YT MP4", callback_data="ytmp4"),
-         InlineKeyboardButton("🔞 Boobs", callback_data="boobs")],
+🎵 Média /lirik <titre> - Paroles de chanson /ytmp4 <lien> - Télécharger une vidéo YouTube /ttp <texte> - Sticker texte
 
-        [InlineKeyboardButton("🔞 NSFW", callback_data="nsfw"),
-         InlineKeyboardButton("🤖 IA Kyotaka", callback_data="ai")],
+🔞 NSFW /nsfw - Menu NSFW /boobs - Image NSFW aléatoire
 
-        [InlineKeyboardButton("📊 Ping", callback_data="ping"),
-         InlineKeyboardButton("⏱️ Uptime", callback_data="uptime")]
-    ]
+⚙️ Divers /ping - Vérifie la latence /uptime - Durée de fonctionnement /info - Infos sur le bot /ai <question> - IA Kyotaka """
 
-    reply_markup = InlineKeyboardMarkup(keyboard)
+await update.message.reply_text(help_text, parse_mode="Markdown")
 
-    await update.message.reply_text(
-        "🧠 *Commandes disponibles :*\nAppuie sur un bouton ci-dessous 👇",
-        reply_markup=reply_markup,
-        parse_mode="Markdown"
-    )
