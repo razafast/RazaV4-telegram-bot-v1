@@ -1,56 +1,88 @@
-import urllib.parse, aiohttp
+"""Commande /lirik — Récupère les paroles d'une chanson via lyrics.ovh (API sans clé).
+
+Utilisation : /lirik <artiste> - <titre>
+Exemples :
+    /lirik eminem - lose yourself
+    /lirik eminem lose yourself
+
+Si aucun tiret n'est fourni, le premier mot est pris comme artiste
+et le reste comme titre.
+"""
+
+import urllib.parse
+import aiohttp
 from telegram import Update
 from telegram.ext import ContextTypes
 
-API_KEY = "14960d2b4c71e3b190761233"          # ← ta clé lolhuman
-API_URL = "https://api.lolhuman.xyz/api/lirik"  # endpoint paroles
+MAX_TELEGRAM_CHARS = 4000  # limite de caractères pour Telegram
 
-MAX_TELEGRAM_CHARS = 4000                      # limite message
+API_BASE = "https://api.lyrics.ovh/v1/{artist}/{title}"
+
+def _parse_query(query: str) -> tuple[str, str] | None:
+    """Détermine (artist, title) à partir d'une chaîne entrée par l'utilisateur."""
+    if "-" in query:
+        artist, title = map(str.strip, query.split("-", 1))
+        if artist and title:
+            return artist, title
+    else:
+        parts = query.split()
+        if len(parts) >= 2:
+            artist = parts[0]
+            title = " ".join(parts[1:])
+            return artist, title
+    return None
+
 
 async def lirik(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    """
-    /lirik <titre ou artiste>   → Renvoie les paroles d’une chanson
-    Peut être utilisé en privé, groupe, supergroupe ou canal.
-    """
-
-    # 1️⃣ récupérer la requête
+    # 1️⃣ Récupère la requête utilisateur
     if context.args:
         query = " ".join(context.args)
     else:
         await update.effective_message.reply_text(
-            "Utilisation : /lirik <titre ou artiste>"
+            "Utilisation : /lirik <artiste> - <titre>"
         )
         return
 
+    parsed = _parse_query(query)
+    if not parsed:
+        await update.effective_message.reply_text(
+            "Format invalide. Exemple : /lirik eminem - lose yourself"
+        )
+        return
+
+    artist, title = parsed
     await update.effective_message.reply_text("🔍 Recherche des paroles…")
 
-    # 2️⃣ appeler l’API lolhuman
-    params = {"apikey": API_KEY, "query": query}
-    url = f"{API_URL}?{urllib.parse.urlencode(params)}"
+    # 2️⃣ Appel API
+    url = API_BASE.format(
+        artist=urllib.parse.quote(artist, safe=""),
+        title=urllib.parse.quote(title, safe=""),
+    )
 
     try:
-        async with aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(total=10)) as s:
-            async with s.get(url) as resp:
-                if resp.status != 200:
+        async with aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(total=10)) as session:
+            async with session.get(url) as resp:
+                if resp.status == 200:
+                    data = await resp.json()
+                elif resp.status == 404:
+                    await update.effective_message.reply_text("❌ Paroles introuvables.")
+                    return
+                else:
                     await update.effective_message.reply_text(
                         f"❌ Erreur API ({resp.status})."
                     )
                     return
-                data = await resp.json()
     except Exception as e:
         await update.effective_message.reply_text(f"❌ Erreur réseau : {e}")
         return
 
-    result = data.get("result", {})
-    title  = result.get("title",  "Titre inconnu")
-    lyrics = result.get("lirik",  "Paroles introuvables")
+    lyrics = data.get("lyrics", "Paroles introuvables")
 
-    # 3️⃣ couper si trop long (Telegram max 4096)
     if len(lyrics) > MAX_TELEGRAM_CHARS:
         lyrics = lyrics[:MAX_TELEGRAM_CHARS] + "\n...\n(Paroles coupées)"
 
     await update.effective_message.reply_text(
-        f"🎶 <b>{title}</b>\n\n<pre>{lyrics}</pre>",
+        f"🎶 <b>{artist.title()} – {title.title()}</b>\n\n<pre>{lyrics}</pre>",
         parse_mode="HTML",
         disable_web_page_preview=True,
     )
