@@ -17,7 +17,7 @@ async def defdark(update: Update, context: ContextTypes.DEFAULT_TYPE):
         data = await resp.json()
         definition_en = data[0]["meanings"][0]["definitions"][0]["definition"]
 
-        # Traduction via LibreTranslate stable
+        
         translate_url = "https://libretranslate.de/translate"
         payload = {
             "q": definition_en,
