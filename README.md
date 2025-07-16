@@ -22,10 +22,10 @@ Développé en **Python** avec la librairie [`python-telegram-bot`](https://pyth
 
 ---
 
-## ⚙️ Installation locale (dev)
+## ⚙️ Installation locale (dev) TERMUX OU AUTRES 
 
 ```bash
-git clone https://github.com/ton-repo/kyotaka-telegram-bot.git
+git clone https://github.com/Dan-jersey/kyotaka-telegram-bot.git
 cd kyotaka-telegram-bot
 pip install -r requirements.txt
 ```
@@ -60,8 +60,6 @@ Tu peux déployer **Kyotaka Bot** gratuitement sur :
 
 ## 🔐 Recommandations
 
-- Ne jamais exposer ton **token** Telegram dans ton code.
-- Utilise des variables d’environnement (`.env`) ou `os.environ["TOKEN"]`.
 - Héberge sur une plateforme qui gère le redémarrage automatique.
 
 ---
