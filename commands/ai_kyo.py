@@ -2,7 +2,7 @@ import os, aiohttp, urllib.parse
 from telegram import Update
 from telegram.ext import ContextTypes
 
-API_KEY = os.getenv("GEMINI_API_KEY")          # ← mets ta clé ici, ou en env
+API_KEY = os.getenv("AIzaSyDbLr0gx5ldIDqxXt9D0iUl77fGUI-QDEM")          # ← mets ta clé ici, ou en env
 API_URL = (
     "https://generativelanguage.googleapis.com/v1beta/models/"
     "gemini-pro:generateContent?key="
