@@ -21,9 +21,10 @@ async def help_command(update: Update, context: CallbackContext):
 /ttp   <texte>   – Sticker texte
 
 🔞 NSFW
-/nsfw  – Menu NSFW
-/boobs – Image NSFW aléatoire
-/ass   – Image NSFW ass 🍑
+/nsfw   – Menu NSFW
+/boobs  – Image NSFW aléatoire
+/ass    – Image NSFW ass 🍑
+/hboobs - Image NSFW hboobs
 
 ⚙️ Divers
 /ping        – Vérifie la latence
