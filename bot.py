@@ -13,7 +13,7 @@ from commands.help_cmd import help_command
 from commands.info import info
 from commands.ttp import ttp
 from commands.lirik import lirik
-from commands.ytmp4 import ytmp4
+from commands.ass import ass
 from commands.ipinfo import ipinfo
 
 # nouvelles commandes
@@ -55,7 +55,7 @@ if __name__ == "__main__":
     # Fun / Media
     app.add_handler(CommandHandler("ttp", ttp))
     app.add_handler(CommandHandler("lirik", lirik))
-    app.add_handler(CommandHandler("ytmp4", ytmp4))
+    app.add_handler(CommandHandler("ass", ass))
     app.add_handler(CommandHandler("boobs", boobs))   # ← ajout de la commande boobs
 
     # Divers
