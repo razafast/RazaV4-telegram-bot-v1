@@ -2,7 +2,7 @@ import aiohttp
 from telegram import Update
 from telegram.ext import ContextTypes
 
-API_URL = "https://nekobot.xyz/api/image?type=boobs"  # Pas besoin de clé
+API_URL = "https://nekobot.xyz/api/image?type=boobs"  
 
 async def boobs(update: Update, context: ContextTypes.DEFAULT_TYPE):
     try:
