@@ -1,30 +1,30 @@
-from telegram import Update
+from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import CallbackContext
 
 async def help_command(update: Update, context: CallbackContext):
-    text = """
-🧠 *Commandes disponibles :*
+    keyboard = [
+        [InlineKeyboardButton("🤖 Kyo dark ia", callback_data="ai")],
+        [InlineKeyboardButton("🧠 Ai tools", callback_data="ai_tools"),
+         InlineKeyboardButton("🌼 Matches organisator", callback_data="matches")],
+        [InlineKeyboardButton("📲 Éditeur vid", callback_data="editeur_vid"),
+         InlineKeyboardButton("💥 KitHack", callback_data="kithack")],
+        [InlineKeyboardButton("❌ VMOS Pro", callback_data="vmos"),
+         InlineKeyboardButton("🤖 Smart Auto", callback_data="auto")],
+        [InlineKeyboardButton("🛡️ Kick", callback_data="kick"),
+         InlineKeyboardButton("♻️ Unban", callback_data="unban")],
+        [InlineKeyboardButton("📍 IP Info", callback_data="ipinfo"),
+         InlineKeyboardButton("📵 IP Masquer", callback_data="ip_masquer")],
+        [InlineKeyboardButton("🎵 Lirik", callback_data="lirik"),
+         InlineKeyboardButton("📹 YT MP4", callback_data="ytmp4")],
+        [InlineKeyboardButton("🔞 NSFW", callback_data="nsfw")],
+        [InlineKeyboardButton("📊 Ping", callback_data="ping"),
+         InlineKeyboardButton("⏱️ Uptime", callback_data="uptime")]
+    ]
 
-👋 _Commandes de base_
-/start – Démarrer le bot
-/help – Voir cette liste
+    reply_markup = InlineKeyboardMarkup(keyboard)
 
-🛡️ _Admin_
-/kick – Expulser un utilisateur (admin uniquement)
-
-🧰 _Utilitaires_
-/info – Infos d’un utilisateur (nom, ID, etc.)
-/ipinfo – Détails sur une IP (ville, pays…)
-
-🎨 _Fun & Media_
-/ttp – Génère un sticker texte
-/lirik – Paroles d’une chanson
-/ytmp4 – Télécharge une vidéo YouTube
-/nsfw – Contenu NSFW (API)
-
-⚙️ _Divers_
-/ping – Vérifie la réponse du bot
-/uptime – Durée de fonctionnement du bot
-/ai ou /kyo – Poser une question à l’IA Kyotaka
-"""
-    await update.message.reply_text(text, parse_mode="Markdown")
+    await update.message.reply_text(
+        "🧠 *Commandes disponibles :*\nChoisis une commande ci-dessous 👇",
+        reply_markup=reply_markup,
+        parse_mode="Markdown"
+    )
