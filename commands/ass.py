@@ -2,8 +2,8 @@ import aiohttp
 from telegram import Update
 from telegram.ext import ContextTypes
 
-API_URL = "https://nekobot.xyz/api/image?type=ass"   # bon endpoint
-CAPTION = "Voici un ass bien 🍑"
+API_URL = "https://api.waifu.pics/nsfw/ass"
+CAPTION = "Voici un 🍑 bien juteux 😏"
 
 async def ass(update: Update, context: ContextTypes.DEFAULT_TYPE):
     try:
@@ -14,7 +14,7 @@ async def ass(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     return
 
                 data = await resp.json()
-                image_url = data.get("message")          # ← champ correct
+                image_url = data.get("url")  # ✅ waifu.pics utilise "url"
 
                 if not image_url:
                     await update.message.reply_text("Pas d'image reçue 😕")
