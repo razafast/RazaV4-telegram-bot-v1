@@ -3,13 +3,15 @@ from io import BytesIO
 from telegram import Update
 from telegram.ext import ContextTypes
 
-API_KEY   = "d90a9e986e18778b"
-BASE_URL  = "https://api.xteam.xyz/ttp"
+API_KEY  = "14960d2b4c71e3b190761233"           # ta clé lolhuman
+API_URL  = "https://api.lolhuman.xyz/api/ttp"    # endpoint TTP
 
 async def ttp(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    """Génère un sticker PNG à partir d’un texte (PV, groupe, canal)."""
+    """
+    /ttp <texte>  ou  répondre à un message texte → génère un sticker PNG
+    """
 
-    # ── 1. Récupérer le texte ──────────────────────────────────────────
+    # 1️⃣  Récupérer le texte
     if context.args:
         text = " ".join(context.args)
     elif update.message.reply_to_message and update.message.reply_to_message.text:
@@ -20,50 +22,30 @@ async def ttp(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         )
         return
 
-    # ── 2. Construire l’URL API ────────────────────────────────────────
-    params = {"file": "true", "text": text, "apikey": API_KEY}
-    url = f"{BASE_URL}?{urllib.parse.urlencode(params)}"
+    await update.effective_message.reply_text("🎨 Génération en cours…")
 
-    # ── 3. Appeler l’API ───────────────────────────────────────────────
+    # 2️⃣  Appel API lolhuman
+    params = {"apikey": API_KEY, "text": text}
+    url = f"{API_URL}?{urllib.parse.urlencode(params)}"
+
     try:
         async with aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(total=15)) as s:
             async with s.get(url) as resp:
                 if resp.status != 200:
                     await update.effective_message.reply_text(
-                        f"🚫 L’API XTeam a renvoyé {resp.status}."
+                        f"❌ Erreur API ({resp.status})."
                     )
                     return
-
-                ctype = resp.headers.get("Content-Type", "")
-                # a) Retour direct d’un PNG
-                if "image/png" in ctype:
-                    image_data = await resp.read()
-
-                # b) Retour JSON → on récupère l’URL puis on retélécharge l’image
-                else:
-                    data = await resp.json()
-                    file_url = (
-                        data.get("result", {}).get("file")           # certain cas
-                        or data.get("result", {}).get("url")         # autre cas
-                        or data.get("url")                           # fallback
-                    )
-                    if not file_url:
-                        await update.effective_message.reply_text("🚫 Réponse API invalide.")
-                        return
-                    async with s.get(file_url) as img_resp:
-                        if img_resp.status != 200:
-                            await update.effective_message.reply_text("🚫 Impossible de récupérer le fichier.")
-                            return
-                        image_data = await img_resp.read()
-
-    except aiohttp.ClientError as e:
-        await update.effective_message.reply_text(f"🚫 Erreur réseau : {e}")
+                # l’API renvoie directement l’image (Content-Type: image/png)
+                img_data = await resp.read()
+    except Exception as e:
+        await update.effective_message.reply_text(f"❌ Erreur réseau : {e}")
         return
 
-    # ── 4. Envoyer la photo ────────────────────────────────────────────
+    # 3️⃣  Envoi du sticker
     await context.bot.send_photo(
         chat_id=update.effective_chat.id,
-        photo=BytesIO(image_data),
+        photo=BytesIO(img_data),
         filename="ttp.png",
-        caption="🖼️ Sticker généré par XTeam"
+        caption="🖼️ Sticker généré par lolhuman"
     )
