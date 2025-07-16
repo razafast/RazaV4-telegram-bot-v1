@@ -41,5 +41,5 @@ async def ttp(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         chat_id=update.effective_chat.id,
         photo=BytesIO(img_data),
         filename="ttp.png",
-        caption="🖼️ Sticker généré par lolhuman"
+        caption="🖼️ Sticker généré par kyotaka"
     )
