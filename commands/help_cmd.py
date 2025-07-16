@@ -16,7 +16,8 @@ async def help_command(update: Update, context: CallbackContext):
          InlineKeyboardButton("📵 IP Masquer", callback_data="ip_masquer")],
         [InlineKeyboardButton("🎵 Lirik", callback_data="lirik"),
          InlineKeyboardButton("📹 YT MP4", callback_data="ytmp4")],
-        [InlineKeyboardButton("🔞 NSFW", callback_data="nsfw")],
+        [InlineKeyboardButton("🔞 NSFW", callback_data="nsfw"),
+         InlineKeyboardButton("🔞 Boobs", callback_data="boobs")],  # ← Ajout ici
         [InlineKeyboardButton("📊 Ping", callback_data="ping"),
          InlineKeyboardButton("⏱️ Uptime", callback_data="uptime")]
     ]
