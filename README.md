@@ -42,7 +42,7 @@ python bot.py
 
 ## ☁️ Déploiement en 1 clic
 
-Tu peux déployer **Kyotaka Bot** gratuitement sur :
+Tu peux aussi déployer **Kyotaka Bot** gratuitement sur :
 
 <p align="center">
   <a href="https://railway.app">
